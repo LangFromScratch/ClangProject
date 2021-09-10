@@ -55,7 +55,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -81,13 +81,25 @@
   <ItemGroup>
     <ClCompile Include="..\FlexBison\CLangProject.flex.cpp" />
     <ClCompile Include="..\FlexBison\CLangProject.tab.cpp" />
+    <ClCompile Include="declaration.cpp" />
+    <ClCompile Include="expression.cpp" />
     <ClCompile Include="index.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="stackMachine.cpp" />
+    <ClCompile Include="statement.cpp" />
+    <ClCompile Include="value.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FlexBison\CLangProject.tab.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="declaration.h" />
+    <ClInclude Include="expression.h" />
+    <ClInclude Include="proc.h" />
+    <ClInclude Include="stackMachine.h" />
+    <ClInclude Include="statement.h" />
+    <ClInclude Include="value.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

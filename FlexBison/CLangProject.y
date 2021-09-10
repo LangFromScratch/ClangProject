@@ -1,60 +1,123 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
+#include "../CLangProject/proc.h"
 #define YYDEBUG 1
-
 extern int yylex(void);
-
-int
-yyerror(char const *str)
-{
-    extern char *yytext;
-    fprintf(stderr, "parser error near %s\n", yytext);
+extern char *yytext;
+int yyerror(char const *str){
+    extern int gLine;
+    fprintf(stderr,"%s, line: %d, near %s\n",str, gLine, yytext);
     return 0;
 }
-
 %}
-%union {
-    int     int_value;
-    double  double_value;
+%code requires {
+#include "../CLangProject/proc.h"
 }
-%token <double_value>    DOUBLE_LITERAL
-%token ADD SUB MUL DIV CR
-%type <double_value> expression term primary_expression
+%union {
+    clg::Expression* pExpression;
+    clg::Statement* pStatement;
+    clg::StatementList* pStatementList;
+    clg::Declaration* pDeclaration;
+    clg::DeclarationList* pDeclarationList;
+    clg::ParameterList* pParameterList;
+    clg::Root* pRoot;
+}
+%token IDENTIFIER INT_LITERAL DMP  INT_TYPE SEMICOLON 
+%token LC RC LP RP
+%type <pExpression> expression intliteral_expression identifier_expression postfix_expression
+%type <pStatementList> statement_list
+%type <pStatement>  dump_statement expression_statement compound_statement statement
+%type <pDeclaration> declaration
+%type <pDeclarationList> declaration_list
+%type <pRoot> root
+%type <pParameterList> parameter_list
 %%
-line_list
-    : line
-    | line_list line
-    ;
-line
-    : expression CR
+root
+    : declaration_list
     {
-        printf(">>%lf\n", $1);
+        $$ = clg::StackMachine::get()->addRootDeclarationList($1);
     }
+    ;
+declaration_list
+    : declaration
+    {
+        $$ = clg::StackMachine::get()->createDeclarationList($1);
+    }
+    | declaration_list declaration
+    {
+        $$ = clg::StackMachine::get()->createDeclarationList($1,$2);
+    }
+    ;
+declaration
+    : INT_TYPE identifier_expression LP parameter_list RP compound_statement
+    {
+        $$ = clg::StackMachine::get()->createIntFunctionDeclaration($2,$6);
+    }
+    ;
+parameter_list
+    : /*empty*/
+    {
+        $$ = clg::StackMachine::get()->createParameterList();
+    }
+    ;
+statement_list
+    : statement
+    {
+        $$ = clg::StackMachine::get()->createStatementList($1);
+    }
+    | statement_list statement
+    {
+        $$ = clg::StackMachine::get()->createStatementList($1,$2);
+    }
+    ;
+statement
+    : dump_statement
+    | compound_statement
+    | expression_statement
+    ;
+expression_statement
+    : expression SEMICOLON
+    {
+        $$ = clg::StackMachine::get()->createExpressionStm($1);
+    }
+    ;
+dump_statement
+    :DMP expression SEMICOLON
+    {
+        $$ = clg::StackMachine::get()->createDumpStm($2);
+    }
+    ;
+compound_statement
+    : LC RC
+    {
+        $$ = clg::StackMachine::get()->createCompoundStatement();
+    }
+    | LC statement_list RC
+    {
+        $$ = clg::StackMachine::get()->createCompoundStatement($2);
+    }
+    ;
 expression
-    : term
-    | expression ADD term
+    :intliteral_expression
+    |identifier_expression
+    |postfix_expression 
+    ;
+postfix_expression
+    : identifier_expression LP  RP
     {
-        $$ = $1 + $3;
-    }
-    | expression SUB term
-    {
-        $$ = $1 - $3;
+        $$ = clg::StackMachine::get()->createFunctionCallExp($1);
     }
     ;
-term
-    : primary_expression
-    | term MUL primary_expression 
+identifier_expression
+    : IDENTIFIER
     {
-        $$ = $1 * $3;
-    }
-    | term DIV primary_expression
-    {
-        $$ = $1 / $3;
+        $$ = clg::StackMachine::get()->createIdentifierExp(yytext);
     }
     ;
-primary_expression
-    : DOUBLE_LITERAL
+intliteral_expression
+    : INT_LITERAL
+    {
+       $$ = clg::StackMachine::get()->createIntLiteralExp(yytext);
+    }
     ;
 %%
 

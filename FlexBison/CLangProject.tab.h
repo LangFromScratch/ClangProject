@@ -39,6 +39,15 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+/* Line 2058 of yacc.c  */
+#line 12 "CLangProject.y"
+
+#include "../CLangProject/proc.h"
+
+
+/* Line 2058 of yacc.c  */
+#line 51 "CLangProject.tab.h"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -46,12 +55,15 @@ extern int yydebug;
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     DOUBLE_LITERAL = 258,
-     ADD = 259,
-     SUB = 260,
-     MUL = 261,
-     DIV = 262,
-     CR = 263
+     IDENTIFIER = 258,
+     INT_LITERAL = 259,
+     DMP = 260,
+     INT_TYPE = 261,
+     SEMICOLON = 262,
+     LC = 263,
+     RC = 264,
+     LP = 265,
+     RP = 266
    };
 #endif
 
@@ -60,14 +72,19 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 17 "CLangProject.y"
+#line 15 "CLangProject.y"
 
-    int     int_value;
-    double  double_value;
+    clg::Expression* pExpression;
+    clg::Statement* pStatement;
+    clg::StatementList* pStatementList;
+    clg::Declaration* pDeclaration;
+    clg::DeclarationList* pDeclarationList;
+    clg::ParameterList* pParameterList;
+    clg::Root* pRoot;
 
 
 /* Line 2058 of yacc.c  */
-#line 71 "CLangProject.tab.h"
+#line 88 "CLangProject.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
