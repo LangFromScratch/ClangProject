@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
         return 1;
     }
     if (yyparse()) {
-        cout << "プログラム終了" << endl;
+        cout << "プログラムを終了します" << endl;
     }
     return 0;
 }
