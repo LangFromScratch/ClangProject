@@ -65,23 +65,18 @@
 /* Line 371 of yacc.c  */
 #line 1 "CLangProject.y"
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "../CLangProject/proc.h"
 #define YYDEBUG 1
-
 extern int yylex(void);
-
-int
-yyerror(char const *str)
-{
-    extern char *yytext;
-    fprintf(stderr, "parser error near %s\n", yytext);
+extern char *yytext;
+int yyerror(char const *str){
+    extern int gLine;
+    fprintf(stderr,"%s, line: %d, near %s\n",str, gLine, yytext);
     return 0;
 }
 
-
 /* Line 371 of yacc.c  */
-#line 85 "CLangProject.tab.cpp"
+#line 80 "CLangProject.tab.cpp"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -110,6 +105,15 @@ yyerror(char const *str)
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+/* Line 387 of yacc.c  */
+#line 12 "CLangProject.y"
+
+#include "../CLangProject/proc.h"
+
+
+/* Line 387 of yacc.c  */
+#line 117 "CLangProject.tab.cpp"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -117,12 +121,15 @@ extern int yydebug;
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     DOUBLE_LITERAL = 258,
-     ADD = 259,
-     SUB = 260,
-     MUL = 261,
-     DIV = 262,
-     CR = 263
+     IDENTIFIER = 258,
+     INT_LITERAL = 259,
+     DMP = 260,
+     INT_TYPE = 261,
+     SEMICOLON = 262,
+     LC = 263,
+     RC = 264,
+     LP = 265,
+     RP = 266
    };
 #endif
 
@@ -131,14 +138,19 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 17 "CLangProject.y"
+#line 15 "CLangProject.y"
 
-    int     int_value;
-    double  double_value;
+    clg::Expression* pExpression;
+    clg::Statement* pStatement;
+    clg::StatementList* pStatementList;
+    clg::Declaration* pDeclaration;
+    clg::DeclarationList* pDeclarationList;
+    clg::ParameterList* pParameterList;
+    clg::Root* pRoot;
 
 
 /* Line 387 of yacc.c  */
-#line 142 "CLangProject.tab.cpp"
+#line 154 "CLangProject.tab.cpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -166,7 +178,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 170 "CLangProject.tab.cpp"
+#line 182 "CLangProject.tab.cpp"
 
 #ifdef short
 # undef short
@@ -386,20 +398,20 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   12
+#define YYLAST   31
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  9
+#define YYNTOKENS  12
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  6
+#define YYNNTS  14
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  11
+#define YYNRULES  21
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  18
+#define YYNSTATES  33
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   263
+#define YYMAXUTOK   266
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -433,7 +445,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8
+       5,     6,     7,     8,     9,    10,    11
 };
 
 #if YYDEBUG
@@ -441,24 +453,28 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     5,     8,    11,    13,    17,    21,    23,
-      27,    31
+       0,     0,     3,     5,     7,    10,    17,    18,    20,    23,
+      25,    27,    29,    32,    36,    39,    43,    45,    47,    49,
+      53,    55
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      10,     0,    -1,    11,    -1,    10,    11,    -1,    12,     8,
-      -1,    13,    -1,    12,     4,    13,    -1,    12,     5,    13,
-      -1,    14,    -1,    13,     6,    14,    -1,    13,     7,    14,
-      -1,     3,    -1
+      13,     0,    -1,    14,    -1,    15,    -1,    14,    15,    -1,
+       6,    24,    10,    16,    11,    21,    -1,    -1,    18,    -1,
+      17,    18,    -1,    20,    -1,    21,    -1,    19,    -1,    22,
+       7,    -1,     5,    22,     7,    -1,     8,     9,    -1,     8,
+      17,     9,    -1,    25,    -1,    24,    -1,    23,    -1,    24,
+      10,    11,    -1,     3,    -1,     4,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    26,    26,    27,    30,    35,    36,    40,    46,    47,
-      51,    57
+       0,    35,    35,    41,    45,    51,    58,    63,    67,    73,
+      74,    75,    78,    84,    90,    94,   100,   101,   102,   105,
+     111,   117
 };
 #endif
 
@@ -467,9 +483,12 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "DOUBLE_LITERAL", "ADD", "SUB", "MUL",
-  "DIV", "CR", "$accept", "line_list", "line", "expression", "term",
-  "primary_expression", YY_NULL
+  "$end", "error", "$undefined", "IDENTIFIER", "INT_LITERAL", "DMP",
+  "INT_TYPE", "SEMICOLON", "LC", "RC", "LP", "RP", "$accept", "root",
+  "declaration_list", "declaration", "parameter_list", "statement_list",
+  "statement", "expression_statement", "dump_statement",
+  "compound_statement", "expression", "postfix_expression",
+  "identifier_expression", "intliteral_expression", YY_NULL
 };
 #endif
 
@@ -478,22 +497,25 @@ static const char *const yytname[] =
    token YYLEX-NUM.  */
 static const yytype_uint16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,   260,   261,   262,   263
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,     9,    10,    10,    11,    12,    12,    12,    13,    13,
-      13,    14
+       0,    12,    13,    14,    14,    15,    16,    17,    17,    18,
+      18,    18,    19,    20,    21,    21,    22,    22,    22,    23,
+      24,    25
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     2,     2,     1,     3,     3,     1,     3,
-       3,     1
+       0,     2,     1,     1,     2,     6,     0,     1,     2,     1,
+       1,     1,     2,     3,     2,     3,     1,     1,     1,     3,
+       1,     1
 };
 
 /* YYDEFACT[STATE-NAME] -- Default reduction number in state STATE-NUM.
@@ -501,29 +523,35 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,    11,     0,     2,     0,     5,     8,     1,     3,     0,
-       0,     4,     0,     0,     6,     7,     9,    10
+       0,     0,     0,     2,     3,    20,     0,     1,     4,     6,
+       0,     0,     0,     5,    21,     0,    14,     0,     7,    11,
+       9,    10,     0,    18,    17,    16,     0,    15,     8,    12,
+       0,    13,    19
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     4,     5,     6
+      -1,     2,     3,     4,    10,    17,    18,    19,    20,    21,
+      22,    23,    24,    25
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -5
+#define YYPACT_NINF -4
 static const yytype_int8 yypact[] =
 {
-       9,    -5,     2,    -5,    -4,     0,    -5,    -5,    -5,     9,
-       9,    -5,     9,     9,     0,     0,    -5,    -5
+       5,     7,    14,     5,    -4,    -4,     6,    -4,    -4,    -4,
+       8,     9,    -3,    -4,    -4,     0,    -4,     4,    -4,    -4,
+      -4,    -4,    11,    -4,    10,    -4,    15,    -4,    -4,    -4,
+      12,    -4,    -4
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -5,    -5,     1,    -5,    -1,    -2
+      -4,    -4,    -4,    18,    -4,    -4,    -2,    -4,    -4,    13,
+      16,    -4,    24,    -4
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -532,28 +560,34 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       9,    10,     7,     8,    11,     1,    12,    13,    14,    15,
-      16,    17,     1
+       5,    14,    15,     5,    14,    12,    16,     5,    14,    15,
+       5,     1,    12,    27,     7,    28,     9,    12,    29,    11,
+      30,     8,    31,    32,    13,     6,     0,     0,     0,     0,
+       0,    26
 };
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-5)))
+  (!!((Yystate) == (-4)))
 
 #define yytable_value_is_error(Yytable_value) \
   YYID (0)
 
-static const yytype_uint8 yycheck[] =
+static const yytype_int8 yycheck[] =
 {
-       4,     5,     0,     2,     8,     3,     6,     7,     9,    10,
-      12,    13,     3
+       3,     4,     5,     3,     4,     8,     9,     3,     4,     5,
+       3,     6,     8,     9,     0,    17,    10,     8,     7,    11,
+      10,     3,     7,    11,    11,     1,    -1,    -1,    -1,    -1,
+      -1,    15
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,    10,    11,    12,    13,    14,     0,    11,     4,
-       5,     8,     6,     7,    13,    13,    14,    14
+       0,     6,    13,    14,    15,     3,    24,     0,    15,    10,
+      16,    11,     8,    21,     4,     5,     9,    17,    18,    19,
+      20,    21,    22,    23,    24,    25,    22,     9,    18,     7,
+      10,     7,    11
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1353,49 +1387,121 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 4:
+        case 2:
 /* Line 1792 of yacc.c  */
-#line 31 "CLangProject.y"
+#line 36 "CLangProject.y"
     {
-        printf(">>%lf\n", (yyvsp[(1) - (2)].double_value));
+        (yyval.pRoot) = clg::StackMachine::get()->addRootDeclarationList((yyvsp[(1) - (1)].pDeclarationList));
+    }
+    break;
+
+  case 3:
+/* Line 1792 of yacc.c  */
+#line 42 "CLangProject.y"
+    {
+        (yyval.pDeclarationList) = clg::StackMachine::get()->createDeclarationList((yyvsp[(1) - (1)].pDeclaration));
+    }
+    break;
+
+  case 4:
+/* Line 1792 of yacc.c  */
+#line 46 "CLangProject.y"
+    {
+        (yyval.pDeclarationList) = clg::StackMachine::get()->createDeclarationList((yyvsp[(1) - (2)].pDeclarationList),(yyvsp[(2) - (2)].pDeclaration));
+    }
+    break;
+
+  case 5:
+/* Line 1792 of yacc.c  */
+#line 52 "CLangProject.y"
+    {
+        (yyval.pDeclaration) = clg::StackMachine::get()->createIntFunctionDeclaration((yyvsp[(2) - (6)].pExpression),(yyvsp[(6) - (6)].pStatement));
     }
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 37 "CLangProject.y"
+#line 58 "CLangProject.y"
     {
-        (yyval.double_value) = (yyvsp[(1) - (3)].double_value) + (yyvsp[(3) - (3)].double_value);
+        (yyval.pParameterList) = clg::StackMachine::get()->createParameterList();
     }
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 41 "CLangProject.y"
+#line 64 "CLangProject.y"
     {
-        (yyval.double_value) = (yyvsp[(1) - (3)].double_value) - (yyvsp[(3) - (3)].double_value);
+        (yyval.pStatementList) = clg::StackMachine::get()->createStatementList((yyvsp[(1) - (1)].pStatement));
     }
     break;
 
-  case 9:
+  case 8:
 /* Line 1792 of yacc.c  */
-#line 48 "CLangProject.y"
+#line 68 "CLangProject.y"
     {
-        (yyval.double_value) = (yyvsp[(1) - (3)].double_value) * (yyvsp[(3) - (3)].double_value);
+        (yyval.pStatementList) = clg::StackMachine::get()->createStatementList((yyvsp[(1) - (2)].pStatementList),(yyvsp[(2) - (2)].pStatement));
     }
     break;
 
-  case 10:
+  case 12:
 /* Line 1792 of yacc.c  */
-#line 52 "CLangProject.y"
+#line 79 "CLangProject.y"
     {
-        (yyval.double_value) = (yyvsp[(1) - (3)].double_value) / (yyvsp[(3) - (3)].double_value);
+        (yyval.pStatement) = clg::StackMachine::get()->createExpressionStm((yyvsp[(1) - (2)].pExpression));
+    }
+    break;
+
+  case 13:
+/* Line 1792 of yacc.c  */
+#line 85 "CLangProject.y"
+    {
+        (yyval.pStatement) = clg::StackMachine::get()->createDumpStm((yyvsp[(2) - (3)].pExpression));
+    }
+    break;
+
+  case 14:
+/* Line 1792 of yacc.c  */
+#line 91 "CLangProject.y"
+    {
+        (yyval.pStatement) = clg::StackMachine::get()->createCompoundStatement();
+    }
+    break;
+
+  case 15:
+/* Line 1792 of yacc.c  */
+#line 95 "CLangProject.y"
+    {
+        (yyval.pStatement) = clg::StackMachine::get()->createCompoundStatement((yyvsp[(2) - (3)].pStatementList));
+    }
+    break;
+
+  case 19:
+/* Line 1792 of yacc.c  */
+#line 106 "CLangProject.y"
+    {
+        (yyval.pExpression) = clg::StackMachine::get()->createFunctionCallExp((yyvsp[(1) - (3)].pExpression));
+    }
+    break;
+
+  case 20:
+/* Line 1792 of yacc.c  */
+#line 112 "CLangProject.y"
+    {
+        (yyval.pExpression) = clg::StackMachine::get()->createIdentifierExp(yytext);
+    }
+    break;
+
+  case 21:
+/* Line 1792 of yacc.c  */
+#line 118 "CLangProject.y"
+    {
+       (yyval.pExpression) = clg::StackMachine::get()->createIntLiteralExp(yytext);
     }
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 1399 "CLangProject.tab.cpp"
+#line 1505 "CLangProject.tab.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1627,7 +1733,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 59 "CLangProject.y"
+#line 122 "CLangProject.y"
 
 
 
